@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASL Letter Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <script>
+        function updatePrediction() {
+            fetch('/current_prediction')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('prediction-img').src = `/static/${data.letter != "nothing" ? data.letter+"_test1.jpg" : "signs.png"}`;
+                    document.getElementById('predicted-letter').innerText = `Class: ${data.letter}`;
+                    document.getElementById('probability-text').innerText = `Probability: ${data.probability}`;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        setInterval(updatePrediction, 100);  // Update every 100 ms
+    </script>
+</head>
+<body>
+    <h1 style="width: 60%; text-align: center;">ASL Letter Prediction</h1>
+    <div class="content-container">
+        <div class="feed-container">
+            <img class="video_feed" src="{{ url_for('video_feed') }}" alt="Video Feed" style="width: 800px; height: 450px; margin-left: 20px;">
+        </div>
+        <div class="feed-container">
+            <img id="prediction-img" src="" alt="Prediction" style="width: 500px; height: 400px; transform: scaleX(-1)">
+            <h1 id="predicted-letter" style="margin-bottom: 10px;">Class: Nothing</h1>
+            <h2 id="probability-text" style="margin-top: 0px; margin-bottom: 0px;">Confidence: 0.0</h2>
+        </div>
+    </div>
+</body>
+</html>
